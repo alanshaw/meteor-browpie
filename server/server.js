@@ -1,3 +1,3 @@
-Meteor.startup(function() {
-	Meteor.publish('agents', UserAgents.findByCreatedGreaterThan);
+Meteor.publish('agents', function(after) {
+	return UserAgents.findByCreatedGreaterThan(after);
 });

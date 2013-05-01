@@ -1,12 +1,10 @@
 Meteor.startup(function() {
 	
-	UserAgents.insert({str: navigator.userAgent, created: Date.now()});
+	UserAgents.insert({str: navigator.userAgent, created: moment().toDate()});
 	
 	var after = moment().subtract('days', 1);
 	
 	Meteor.subscribe('agents', after.toDate(), function() {
-		
-		console.log('Got the agents');
 		
 		var agents = UserAgents.findByCreatedGreaterThan(after.toDate());
 		
