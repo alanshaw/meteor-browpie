@@ -114,7 +114,7 @@ function renderPies() {
 		.attr("class", "arc");
 	
 	sliceEnter.append("path")
-		.style("fill", function(d) { return color(d.data.count); });
+		.style("fill", function(d) { return groupColour(d.data.name); });
 	
 	sliceEnter.append("text")
 		.attr("dy", ".35em")
@@ -144,5 +144,20 @@ function pieData(agents) {
 	return Object.keys(agentMap).map(function(groupName) {
 		return {name: groupName, count: agentMap[groupName]};
 	});
+}
+
+function groupColour(group) {
+	switch(group) {
+		case AgentGroup.IEMobile: return '#000';
+		case AgentGroup.IE: return '#000';
+		case AgentGroup.OperaMini: return '#990000';
+		case AgentGroup.Opera: return '#CC0F16';
+		case AgentGroup.Chrome: return '#E0EDF5';
+		case AgentGroup.MobileSafari: return '#000';
+		case AgentGroup.Safari: return '#000';
+		case AgentGroup.Firefox: return '#DE730C';
+		default: return '#000'; 
+	}
+	
 }
 
