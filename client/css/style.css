@@ -1,7 +1,7 @@
 body {
 	background: #eee;
 	margin: 0;
-	padding: 1em 3em;
+	padding: 1em;
 }
 h1, h2 {
 	margin: 0;
@@ -26,7 +26,20 @@ hgroup {
 	font-weight: 300;
 	color: #353535;
 }
+#gh {
+	position: absolute;
+	top: 2em;
+	right: 1em;
+	opacity: 0.15;
+	transition: opacity 0.25s linear;
+}
+#gh:hover {
+	opacity: 1;
+}
 @media only screen and (min-width: 768px) {
+	body {
+		padding: 1em 3em;
+	}
 	.pie {
 		width: 500px;
 	}
@@ -35,14 +48,8 @@ hgroup {
 		top: 255px;
 		left: -6em;
 	}
+	#gh {
+		right: 3em;
+	}
 }
-#gh {
-	position: absolute;
-	top: 2em;
-	right: 3em;
-	opacity: 0.15;
-	transition: opacity 0.25s linear;
-}
-#gh:hover {
-	opacity: 1;
-}
+
