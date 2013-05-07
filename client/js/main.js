@@ -109,7 +109,7 @@ function renderPies() {
 	
 	sliceEnter.append("path")
 		.style("fill", function(d) { return groupColour(d.data.name); })
-		.style('stroke', '#f6f6f6')
+		.style('stroke', '#fff')
 		.style('stroke-width', 10)
 		.style('stroke-linejoin', 'bevel');
 	
@@ -118,12 +118,6 @@ function renderPies() {
 		.attr('preserveAspectRatio', 'none')
 		.attr('width', 70)
 		.attr('height', 70);
-	
-	/*sliceEnter.append("text")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
-		.text(function(d) { return d.data.name; });
-	*/
 	
 	var sliceUpdate = slice.transition();
 	
@@ -135,11 +129,6 @@ function renderPies() {
 			var centroid = arc.centroid(d);
 			return "translate(" + (centroid[0] - 35) + ',' + (centroid[1] - 35) + ")";
 		});
-	
-	/*
-	sliceUpdate.select("text")
-		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; });
-	*/
 }
 
 // Convert a bunch of agents into data for a pie chart
@@ -173,7 +162,7 @@ function groupColour(group) {
 
 function groupImage(group) {
 	switch(group) {
-		case AgentGroup.IEMobile: return 'ie8-700';
+		case AgentGroup.IEMobile: return 'ie10';
 		case AgentGroup.IE: return 'ie8-700';
 		case AgentGroup.Opera: return 'opera';
 		case AgentGroup.Chrome: return 'chrome';

@@ -1,4 +1,22 @@
+body {
+	background: #eee;
+	margin: 0;
+	padding: 1em 3em;
+}
+h1, h2 {
+	margin: 0;
+}
+h1 {
+	font: 300 60px "Helvetica Neue",Helvetica,Arial,sans-serif;
+	color: #353535;
+}
+h2 {
+	font: 100 30px/0.75 "Helvetica Neue",Helvetica,Arial,sans-serif;
+	color: #cecece;
+}
+hgroup {
+	margin-bottom: 2em;
+}
 text {
-	font-family: "Helvetica Neue", Helvetica, Arial, san-serif;
 	font-size: 0.75em;
 }
