@@ -51,6 +51,9 @@ Meteor.startup(function() {
 	
 	// Do some d3 when the UserAgents collection changes.
 	Deps.autorun(renderPies);
+	
+	// Do some d3 when some time has elapsed
+	Meteor.setInterval(renderPies, 30000);
 });
 
 function renderPies() {
