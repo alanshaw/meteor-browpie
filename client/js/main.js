@@ -116,6 +116,8 @@ function renderPies() {
 				var centroid = arc.centroid(d);
 				return "translate(" + (centroid[0] - (imageDim / 2)) + ',' + (centroid[1] - (imageDim / 2)) + ")";
 			});
+		
+		slice.exit().remove();
 	});
 }
 
