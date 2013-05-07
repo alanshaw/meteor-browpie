@@ -85,10 +85,6 @@ function renderPies() {
 		height = 500,
 		radius = Math.min(width, height) / 2;
 	
-	var color = d3.scale.linear()
-		.domain([1, d3.max(data, function(d) {return d.count;})])
-		.range(["#98abc5", "#ff8c00"]);
-	
 	var arc = d3.svg.arc()
 		.outerRadius(radius - 10)
 		.innerRadius(0);
