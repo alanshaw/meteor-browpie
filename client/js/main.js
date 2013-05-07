@@ -116,7 +116,8 @@ function renderPies() {
 	sliceEnter.append("path")
 		.style("fill", function(d) { return groupColour(d.data.name); })
 		.style('stroke', '#f6f6f6')
-		.style('stroke-width', 3);
+		.style('stroke-width', 10)
+		.style('stroke-linejoin', 'bevel');
 	
 	sliceEnter.append("text")
 		.attr("dy", ".35em")
