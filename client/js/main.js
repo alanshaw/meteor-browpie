@@ -65,9 +65,8 @@ function renderPies() {
 		
 		var data = pieData(agents);
 		
-		var width = 960,
-			height = 500,
-			radius = Math.min(width, height) / 2;
+		var pieDim = Math.min(document.getElementById(periods[i]).clientWidth, 500),
+			radius = pieDim / 2;
 		
 		var arc = d3.svg.arc()
 			.outerRadius(radius - 10)
@@ -81,10 +80,10 @@ function renderPies() {
 		
 		if(svg.empty()) {
 			svg = d3.select('#' + periods[i]).append("svg")
-				.attr("width", width)
-				.attr("height", height)
+				.attr("width", pieDim)
+				.attr("height", pieDim)
 				.append("g")
-				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				.attr("transform", "translate(" + radius + "," + radius + ")");
 		}
 		
 		var slice = svg.selectAll(".arc").data(pie(data), function(d) { return d.data.name; });
@@ -96,14 +95,16 @@ function renderPies() {
 		sliceEnter.append("path")
 			.style("fill", function(d) { return d.data.colour; })
 			.style('stroke', '#fff')
-			.style('stroke-width', 10)
+			.style('stroke-width', 0.02 * pieDim)
 			.style('stroke-linejoin', 'bevel');
+		
+		var imageDim = 0.14 * pieDim;
 		
 		sliceEnter.append('image')
 			.attr('xlink:href', function(d) { return d.data.image; })
 			.attr('preserveAspectRatio', 'none')
-			.attr('width', 70)
-			.attr('height', 70);
+			.attr('width', imageDim)
+			.attr('height', imageDim);
 		
 		var sliceUpdate = slice.transition();
 		
@@ -113,7 +114,7 @@ function renderPies() {
 		sliceUpdate.select("image")
 			.attr("transform", function(d) {
 				var centroid = arc.centroid(d);
-				return "translate(" + (centroid[0] - 35) + ',' + (centroid[1] - 35) + ")";
+				return "translate(" + (centroid[0] - (imageDim / 2)) + ',' + (centroid[1] - (imageDim / 2)) + ")";
 			});
 	});
 }

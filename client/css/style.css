@@ -17,7 +17,32 @@ h2 {
 hgroup {
 	margin-bottom: 2em;
 }
+.pie {
+	width: 320px;
+	margin: 0 auto;
+}
 .pie h2 {
-	font-size: 24px;
+	font-size: 16px;
+	font-weight: 300;
 	color: #353535;
+}
+@media only screen and (min-width: 768px) {
+	.pie {
+		width: 500px;
+	}
+	.pie h2 {
+		position: relative;
+		top: 255px;
+		left: -6em;
+	}
+}
+#gh {
+	position: absolute;
+	top: 2em;
+	right: 3em;
+	opacity: 0.15;
+	transition: opacity 0.25s linear;
+}
+#gh:hover {
+	opacity: 1;
 }
