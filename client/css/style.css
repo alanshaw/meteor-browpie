@@ -17,6 +17,7 @@ h2 {
 hgroup {
 	margin-bottom: 2em;
 }
-text {
-	font-size: 0.75em;
+.pie h2 {
+	font-size: 24px;
+	color: #353535;
 }

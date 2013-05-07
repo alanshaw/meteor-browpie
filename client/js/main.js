@@ -1,12 +1,11 @@
-var now = moment();
-
 // The time periods that our pie charts will show
-var pies = [
-	now.subtract(1, 'hour'),
-	now.subtract(1, 'day'),
-	now.subtract(1, 'month'),
-	now.subtract(1, 'year')
-];
+var periods = ['hour', 'day', 'month', 'year'];
+
+function getBoundaries() {
+	return periods.map(function(period) {
+		return moment().subtract(1, period);
+	});
+}
 
 // Agent groupings
 var AgentGroup = {
@@ -20,6 +19,125 @@ var AgentGroup = {
 	Firefox: 'Firefox',
 	Other: 'Other'
 };
+
+Meteor.startup(function() {
+	
+	UserAgents.insert({str: navigator.userAgent, created: moment().toDate()});
+	
+	var boundary = 0,
+		boundaries = getBoundaries(),
+		subscriptons = [];
+	
+	(function chunkedSubscribe() {
+		
+		subscriptons.push(
+			Meteor.subscribe('agents', boundaries[boundary].toDate(), function() {
+				if(boundary == boundaries.length - 1) return;
+				
+				console.log('Got agents after', boundaries[boundary].toDate());
+				
+				boundary++;
+				
+				chunkedSubscribe();
+				
+				// Remove the previous subscription
+				if(subscriptons.length) {
+					subscriptons.shift().stop();
+				}
+			})
+		);
+		
+	})();
+	
+	// Do some d3 when the UserAgents collection changes.
+	Deps.autorun(renderPies);
+});
+
+function renderPies() {
+	
+	getBoundaries().forEach(function(boundary, i) {
+		
+		var agents = UserAgents.findByCreatedGreaterThan(boundary.toDate());
+		
+		if(!agents.count()) {
+			return;
+		}
+		
+		var data = pieData(agents);
+		
+		var width = 960,
+			height = 500,
+			radius = Math.min(width, height) / 2;
+		
+		var arc = d3.svg.arc()
+			.outerRadius(radius - 10)
+			.innerRadius(0);
+		
+		var pie = d3.layout.pie()
+			.sort(null)
+			.value(function(d) { return d.count; });
+		
+		var svg = d3.select('#'+ periods[i] + ' svg > g');
+		
+		if(svg.empty()) {
+			svg = d3.select('#' + periods[i]).append("svg")
+				.attr("width", width)
+				.attr("height", height)
+				.append("g")
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+		}
+		
+		var slice = svg.selectAll(".arc").data(pie(data), function(d) { return d.data.name; });
+		
+		var sliceEnter = slice.enter()
+			.append("g")
+			.attr("class", "arc");
+		
+		sliceEnter.append("path")
+			.style("fill", function(d) { return d.data.colour; })
+			.style('stroke', '#fff')
+			.style('stroke-width', 10)
+			.style('stroke-linejoin', 'bevel');
+		
+		sliceEnter.append('image')
+			.attr('xlink:href', function(d) { return d.data.image; })
+			.attr('preserveAspectRatio', 'none')
+			.attr('width', 70)
+			.attr('height', 70);
+		
+		var sliceUpdate = slice.transition();
+		
+		sliceUpdate.select('path')
+			.attr("d", arc);
+		
+		sliceUpdate.select("image")
+			.attr("transform", function(d) {
+				var centroid = arc.centroid(d);
+				return "translate(" + (centroid[0] - 35) + ',' + (centroid[1] - 35) + ")";
+			});
+	});
+}
+
+// Convert a bunch of agents into data for a pie chart
+function pieData(agents) {
+	var agentMap = {};
+	
+	// Count the grouped agents
+	agents.forEach(function(agent) {
+		var group = groupAgent(agent.str);
+		agentMap[group] = agentMap[group] ? agentMap[group] + 1 : 1;
+	});
+	
+	// Convert to array
+	return Object.keys(agentMap).map(function(groupName) {
+		return {
+			name: groupName,
+			count: agentMap[groupName],
+			colour: groupColour(groupName),
+			image: '/img/browser-logos/' + groupImage(groupName) + '.png'
+		};
+	});
+}
 
 // Converts a user agent string into an agent group
 function groupAgent(agent) {
@@ -42,111 +160,7 @@ function groupAgent(agent) {
 	return AgentGroup.Other;
 }
 
-Meteor.startup(function() {
-	
-	UserAgents.insert({str: navigator.userAgent, created: moment().toDate()});
-	
-	var pie = 0;
-	var subscriptons = [];
-	
-	(function chunkedSubscribe() {
-		
-		subscriptons.push(
-			Meteor.subscribe('agents', pies[pie].toDate(), function() {
-				if(pie == pies.length - 1) return;
-				
-				console.log('Got agents after', pies[pie].toDate());
-				
-				pie++;
-				
-				chunkedSubscribe();
-				
-				// Remove the previous subscription
-				if(subscriptons.length) {
-					subscriptons.shift().stop();
-				}
-			})
-		);
-		
-	})();
-	
-	// Do some d3 when the UserAgents collection changes.
-	Deps.autorun(renderPies);
-});
-
-function renderPies() {
-	
-	var agents = UserAgents.findByCreatedGreaterThan(pies[0].toDate());
-	var data = pieData(agents);
-	
-	var width = 960,
-		height = 500,
-		radius = Math.min(width, height) / 2;
-	
-	var arc = d3.svg.arc()
-		.outerRadius(radius - 10)
-		.innerRadius(0);
-	
-	var pie = d3.layout.pie()
-		.sort(null)
-		.value(function(d) { return d.count; });
-	
-	var svg = d3.select("svg > g");
-	
-	if(svg.empty()) {
-		svg = d3.select("body").append("svg")
-			.attr("width", width)
-			.attr("height", height)
-			.append("g")
-			.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-	}
-	
-	var slice = svg.selectAll(".arc").data(pie(data), function(d) { return d.data.name; });
-	
-	var sliceEnter = slice.enter()
-		.append("g")
-		.attr("class", "arc");
-	
-	sliceEnter.append("path")
-		.style("fill", function(d) { return groupColour(d.data.name); })
-		.style('stroke', '#fff')
-		.style('stroke-width', 10)
-		.style('stroke-linejoin', 'bevel');
-	
-	sliceEnter.append('image')
-		.attr('xlink:href', function(d) { return '/img/browser-logos/' + groupImage(d.data.name) + '.png'; })
-		.attr('preserveAspectRatio', 'none')
-		.attr('width', 70)
-		.attr('height', 70);
-	
-	var sliceUpdate = slice.transition();
-	
-	sliceUpdate.select('path')
-		.attr("d", arc);
-	
-	sliceUpdate.select("image")
-		.attr("transform", function(d) {
-			var centroid = arc.centroid(d);
-			return "translate(" + (centroid[0] - 35) + ',' + (centroid[1] - 35) + ")";
-		});
-}
-
-// Convert a bunch of agents into data for a pie chart
-function pieData(agents) {
-	var agentMap = {};
-	
-	// Count the grouped agents
-	agents.forEach(function(agent) {
-		var group = groupAgent(agent.str);
-		agentMap[group] = agentMap[group] ? agentMap[group] + 1 : 1;
-	});
-	
-	// Convert to array
-	return Object.keys(agentMap).map(function(groupName) {
-		return {name: groupName, count: agentMap[groupName]};
-	});
-}
-
+// Converts a group name into a colour
 function groupColour(group) {
 	switch(group) {
 		case AgentGroup.IEMobile: return '#194371';
@@ -160,6 +174,7 @@ function groupColour(group) {
 	}
 }
 
+// Converts a group name into an image name
 function groupImage(group) {
 	switch(group) {
 		case AgentGroup.IEMobile: return 'ie10';
