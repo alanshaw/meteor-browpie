@@ -28,11 +28,9 @@ function groupAgent(agent) {
 		return AgentGroup.Chrome;
 	} else if(agent.indexOf('Firefox') != -1) {
 		return AgentGroup.Firefox;
-	} else if(agent.indexOf('Opera Mini') != -1) {
-		return AgentGroup.OperaMini;
 	} else if(agent.indexOf('Opera') != -1) {
 		return AgentGroup.Opera;
-	} else if(agent.indexOf('Mobile Safari') != -1) {
+	} else if(agent.indexOf('Safari') != -1 && agent.indexOf('Mobile') != -1) {
 		return AgentGroup.MobileSafari;
 	} else if(agent.indexOf('Safari') != -1) {
 		return AgentGroup.Safari;
@@ -162,14 +160,13 @@ function pieData(agents) {
 
 function groupColour(group) {
 	switch(group) {
-		case AgentGroup.IEMobile: return '#000';
-		case AgentGroup.IE: return '#000';
-		case AgentGroup.OperaMini: return '#990000';
+		case AgentGroup.IEMobile: return '#194371';
+		case AgentGroup.IE: return '#194371';
 		case AgentGroup.Opera: return '#CC0F16';
-		case AgentGroup.Chrome: return '#E0EDF5';
-		case AgentGroup.MobileSafari: return '#000';
-		case AgentGroup.Safari: return '#000';
-		case AgentGroup.Firefox: return '#DE730C';
+		case AgentGroup.Chrome: return '#4db849';
+		case AgentGroup.MobileSafari: return '#3b98d5';
+		case AgentGroup.Safari: return '#3b98d5';
+		case AgentGroup.Firefox: return '#dd7210';
 		default: return '#000'; 
 	}
 }
@@ -178,10 +175,9 @@ function groupImage(group) {
 	switch(group) {
 		case AgentGroup.IEMobile: return 'ie8-700';
 		case AgentGroup.IE: return 'ie8-700';
-		case AgentGroup.OperaMini: return 'opera';
 		case AgentGroup.Opera: return 'opera';
 		case AgentGroup.Chrome: return 'chrome';
-		case AgentGroup.MobileSafari: return 'safari';
+		case AgentGroup.MobileSafari: return 'mobile-safari';
 		case AgentGroup.Safari: return 'safari';
 		case AgentGroup.Firefox: return 'firefox';
 		default: return 'maxthon'; 
