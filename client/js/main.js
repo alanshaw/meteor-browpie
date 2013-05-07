@@ -115,18 +115,33 @@ function renderPies() {
 		.style('stroke-width', 10)
 		.style('stroke-linejoin', 'bevel');
 	
-	sliceEnter.append("text")
+	sliceEnter.append('image')
+		.attr('xlink:href', function(d) { return '/img/browser-logos/' + groupImage(d.data.name) + '.png'; })
+		.attr('preserveAspectRatio', 'none')
+		.attr('width', 70)
+		.attr('height', 70);
+	
+	/*sliceEnter.append("text")
 		.attr("dy", ".35em")
 		.style("text-anchor", "middle")
 		.text(function(d) { return d.data.name; });
+	*/
 	
 	var sliceUpdate = slice.transition();
 	
 	sliceUpdate.select('path')
 		.attr("d", arc);
 	
+	sliceUpdate.select("image")
+		.attr("transform", function(d) {
+			var centroid = arc.centroid(d);
+			return "translate(" + (centroid[0] - 35) + ',' + (centroid[1] - 35) + ")";
+		});
+	
+	/*
 	sliceUpdate.select("text")
 		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; });
+	*/
 }
 
 // Convert a bunch of agents into data for a pie chart
@@ -157,6 +172,19 @@ function groupColour(group) {
 		case AgentGroup.Firefox: return '#DE730C';
 		default: return '#000'; 
 	}
-	
+}
+
+function groupImage(group) {
+	switch(group) {
+		case AgentGroup.IEMobile: return 'ie8-700';
+		case AgentGroup.IE: return 'ie8-700';
+		case AgentGroup.OperaMini: return 'opera';
+		case AgentGroup.Opera: return 'opera';
+		case AgentGroup.Chrome: return 'chrome';
+		case AgentGroup.MobileSafari: return 'safari';
+		case AgentGroup.Safari: return 'safari';
+		case AgentGroup.Firefox: return 'firefox';
+		default: return 'maxthon'; 
+	}
 }
 
