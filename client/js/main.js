@@ -190,7 +190,7 @@ function groupImage(group) {
 		case AgentGroup.MobileSafari: return 'mobile-safari';
 		case AgentGroup.Safari: return 'safari';
 		case AgentGroup.Firefox: return 'firefox';
-		default: return 'maxthon'; 
+		default: return 'other'; 
 	}
 }
 
