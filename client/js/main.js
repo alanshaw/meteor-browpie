@@ -158,6 +158,9 @@ function groupAgent(agent) {
 		return AgentGroup.MobileSafari;
 	} else if(agent.indexOf('Safari') != -1) {
 		return AgentGroup.Safari;
+	// Group the UIWebView browsers in apps as Mobile Safari
+	} else if(agent.indexOf('iPhone') != -1 || agent.indexOf('iPad') != -1) {
+		return AgentGroup.MobileSafari;
 	} else if(agent.indexOf('IE Mobile') != -1) {
 		return AgentGroup.IEMobile;
 	} else if(agent.indexOf('IE') != -1) {
