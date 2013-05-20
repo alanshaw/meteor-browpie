@@ -7,5 +7,5 @@ UserAgents.allow({
 });
 
 UserAgents.findByCreatedGreaterThan = function(after) {
-	return UserAgents.find({created: {$gt: after}}, {sort: {created: 'desc'}});
+	return UserAgents.find({created: {$gt: after}}, {sort: ['created', 'desc']});
 };
