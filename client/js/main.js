@@ -24,39 +24,29 @@ Meteor.startup(function() {
 	
 	UserAgents.insert({str: navigator.userAgent, created: moment().toDate()});
 	
-	var boundary = 0,
-		boundaries = getBoundaries(),
-		subscriptons = [];
+	var boundaries = getBoundaries();
 	
-	(function chunkedSubscribe() {
-		
-		subscriptons.push(
-			Meteor.subscribe('agents', boundaries[boundary].toDate(), function() {
-				if(boundary == boundaries.length - 1) return;
-				
-				console.log('Got agents after', boundaries[boundary].toDate());
-				
-				boundary++;
-				
-				chunkedSubscribe();
-				
-				// Remove the previous subscription
-				if(subscriptons.length) {
-					subscriptons.shift().stop();
-				}
-			})
-		);
-		
-	})();
+	Meteor.subscribe('agents', boundaries[boundaries.length - 1].toDate());
 	
 	// Do some d3 when the UserAgents collection changes.
-	Deps.autorun(renderPies);
+	Deps.autorun(debounceRenderPies);
 	
 	// Do some d3 when some time has elapsed
-	Meteor.setInterval(renderPies, 30000);
+	Meteor.setInterval(debounceRenderPies, 30000);
 });
 
+var debounceRenderPies = (function() {
+	var renderPiesTimeoutId;
+	return function() {
+		console.log('User agents count', UserAgents.find({}).fetch().length);
+		Meteor.clearTimeout(renderPiesTimeoutId);
+		renderPiesTimeoutId = Meteor.setTimeout(renderPies, 500);
+	};
+})();
+
 function renderPies() {
+	
+	console.log("renderPies @ " + (new Date));
 	
 	getBoundaries().forEach(function(boundary, i) {
 		
