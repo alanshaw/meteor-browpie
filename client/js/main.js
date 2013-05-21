@@ -36,11 +36,16 @@ Meteor.startup(function() {
 });
 
 var debounceRenderPies = (function() {
-	var renderPiesTimeoutId;
+	var scheduled = false;
 	return function() {
 		console.log('User agents count', UserAgents.find({}).fetch().length);
-		Meteor.clearTimeout(renderPiesTimeoutId);
-		renderPiesTimeoutId = Meteor.setTimeout(renderPies, 500);
+		if (!scheduled) {
+			scheduled = true;
+			Meteor.setTimeout(function() {
+				scheduled = false;
+				renderPies();
+			}, 500);
+		}
 	};
 })();
 
