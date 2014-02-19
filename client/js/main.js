@@ -158,7 +158,7 @@ function groupAgent(agent) {
 		return AgentGroup.MobileSafari;
 	} else if(agent.indexOf('IE Mobile') != -1) {
 		return AgentGroup.IEMobile;
-	} else if(agent.indexOf('IE') != -1) {
+	} else if(agent.indexOf('IE') != -1 || agent.indexOf('Trident') != -1) {
 		return AgentGroup.IE;
 	}
 	return AgentGroup.Other;
