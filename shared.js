@@ -1,4 +1,4 @@
-UserAgents = new Meteor.Collection('agents');
+UserAgents = new Mongo.Collection('agents');
 
 UserAgents.allow({
 	insert: function() {

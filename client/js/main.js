@@ -29,7 +29,7 @@ Meteor.startup(function() {
 	Meteor.subscribe('agents', boundaries[boundaries.length - 1].toDate());
 	
 	// Do some d3 when the UserAgents collection changes.
-	Deps.autorun(debounceRenderPies);
+	Tracker.autorun(debounceRenderPies);
 	
 	// Do some d3 when some time has elapsed
 	Meteor.setInterval(debounceRenderPies, 30000);
